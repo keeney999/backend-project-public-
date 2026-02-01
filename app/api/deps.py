@@ -1,6 +1,7 @@
 """
 Dependencies для API эндпоинтов.
 """
+
 from typing import Optional, Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -13,8 +14,8 @@ security = HTTPBearer()
 
 
 async def get_current_user(
-        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
-        db: Annotated[AsyncSession, Depends(get_db)]
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> Optional[dict]:
     """
     Получает текущего аутентифицированного пользователя из JWT токена.

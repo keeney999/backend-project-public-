@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     DATABASE_URL: Optional[PostgresDsn] = None
 
-    @field_validator("DATABASE_URL", mode='before')
+    @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def assemble_db_connection(cls, v: Optional[str], info: ValidationInfo) -> str:
         """Собирает DSN для подключения к PostgreSQL."""
@@ -27,13 +27,15 @@ class Settings(BaseSettings):
             return v
 
         data = info.data
-        return str(PostgresDsn.build(
-            scheme="postgresql+asyncpg",
-            username=data.get("POSTGRES_USER"),
-            password=data.get("POSTGRES_PASSWORD"),
-            host=data.get("POSTGRES_SERVER"),
-            path=f"{data.get('POSTGRES_DB') or ''}",
-        ))
+        return str(
+            PostgresDsn.build(
+                scheme="postgresql+asyncpg",
+                username=data.get("POSTGRES_USER"),
+                password=data.get("POSTGRES_PASSWORD"),
+                host=data.get("POSTGRES_SERVER"),
+                path=f"{data.get('POSTGRES_DB') or ''}",
+            )
+        )
 
     class Config:
         env_file = ".env"

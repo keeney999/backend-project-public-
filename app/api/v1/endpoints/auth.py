@@ -1,6 +1,7 @@
 """
 Эндпоинты для аутентификации.
 """
+
 from datetime import timedelta
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -15,10 +16,11 @@ from app.crud.user import user as user_crud
 router = APIRouter()
 
 
-@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+)
 async def signup(
-        user_in: UserCreate,
-        db: Annotated[AsyncSession, Depends(get_db)]
+    user_in: UserCreate, db: Annotated[AsyncSession, Depends(get_db)]
 ) -> dict:
     """
     Регистрация нового пользователя.
@@ -37,8 +39,7 @@ async def signup(
     db_user = await user_crud.get_by_email(db, email=user_in.email)
     if db_user:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
     # Создаем пользователя
     user = await user_crud.create(db, user_in=user_in)
@@ -48,8 +49,8 @@ async def signup(
 
 @router.post("/login", response_model=Token)
 async def login(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-        db: Annotated[AsyncSession, Depends(get_db)]
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[AsyncSession, Depends(get_db)],
 ) -> dict:
     """
     Аутентификация пользователя.
@@ -82,14 +83,12 @@ async def login(
     # Проверяем активность пользователя
     if not db_user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Inactive user"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )
     # Создаем токен
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"user_id": db_user.id},
-        expires_delta=access_token_expires
+        data={"user_id": db_user.id}, expires_delta=access_token_expires
     )
 
     return {"access_token": access_token, "token_type": "bearer"}

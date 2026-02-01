@@ -1,10 +1,13 @@
 """
 CRUD операции для заметок.
 """
+
 from typing import Optional, List
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.models import Note, User
+
+from app.db.models import Note
 from app.schemas.note import NoteCreate, NoteUpdate
 
 
@@ -13,9 +16,7 @@ class NoteCRUD:
 
     @staticmethod
     async def get_by_id(
-            db: AsyncSession,
-            note_id: int,
-            owner_id: Optional[int] = None
+        db: AsyncSession, note_id: int, owner_id: Optional[int] = None
     ) -> Optional[Note]:
         """
         Получает заметку по ID.
@@ -38,10 +39,7 @@ class NoteCRUD:
 
     @staticmethod
     async def get_multi(
-            db: AsyncSession,
-            owner_id: int,
-            skip: int = 0,
-            limit: int = 100
+        db: AsyncSession, owner_id: int, skip: int = 0, limit: int = 100
     ) -> List[Note]:
         """
         Получает список заметок пользователя.
@@ -66,11 +64,7 @@ class NoteCRUD:
         return result.scalars().all()
 
     @staticmethod
-    async def create(
-            db: AsyncSession,
-            note_in: NoteCreate,
-            owner_id: int
-    ) -> Note:
+    async def create(db: AsyncSession, note_in: NoteCreate, owner_id: int) -> Note:
         """
         Создает новую заметку.
 
@@ -91,11 +85,7 @@ class NoteCRUD:
         return db_note
 
     @staticmethod
-    async def update(
-            db: AsyncSession,
-            db_note: Note,
-            note_in: NoteUpdate
-    ) -> Note:
+    async def update(db: AsyncSession, db_note: Note, note_in: NoteUpdate) -> Note:
         """
         Обновляет заметку.
 

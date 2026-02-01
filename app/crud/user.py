@@ -1,6 +1,7 @@
 """
 CRUD операции для пользователей.
 """
+
 from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,9 +25,7 @@ class UserCRUD:
         Returns:
             Optional[User]: Объект пользователя или None
         """
-        result = await db.execute(
-            select(User).where(User.id == user_id)
-        )
+        result = await db.execute(select(User).where(User.id == user_id))
         return result.scalar_one_or_none()
 
     @staticmethod
@@ -41,9 +40,7 @@ class UserCRUD:
         Returns:
             Optional[User]: Объект пользователя или None
         """
-        result = await db.execute(
-            select(User).where(User.email == email)
-        )
+        result = await db.execute(select(User).where(User.email == email))
         return result.scalar_one_or_none()
 
     @staticmethod
@@ -65,7 +62,7 @@ class UserCRUD:
         db_user = User(
             email=user_in.email,
             hashed_password=hashed_password,
-            is_active=user_in.is_active
+            is_active=user_in.is_active,
         )
 
         # Сохраняем в БД
@@ -76,11 +73,7 @@ class UserCRUD:
         return db_user
 
     @staticmethod
-    async def update(
-            db: AsyncSession,
-            db_user: User,
-            user_in: UserUpdate
-    ) -> User:
+    async def update(db: AsyncSession, db_user: User, user_in: UserUpdate) -> User:
         """
         Обновляет данные пользователя.
 

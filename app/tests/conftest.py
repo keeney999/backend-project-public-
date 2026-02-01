@@ -1,6 +1,7 @@
 """
 Конфигурация тестов.
 """
+
 import asyncio
 from typing import AsyncGenerator, Generator
 import pytest
@@ -10,19 +11,16 @@ from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.db.database import get_db
 from app.db.models import Base
+
 # Тестовая БД (SQLite в памяти)
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 # Создаем тестовый движок
 test_engine = create_async_engine(
-    TEST_DATABASE_URL,
-    echo=False,
-    connect_args={"check_same_thread": False}
+    TEST_DATABASE_URL, echo=False, connect_args={"check_same_thread": False}
 )
 # Создаем фабрику сессий для тестов
 TestingSessionLocal = sessionmaker(
-    test_engine,
-    class_=AsyncSession,
-    expire_on_commit=False
+    test_engine, class_=AsyncSession, expire_on_commit=False
 )
 
 
@@ -63,6 +61,7 @@ async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
     """
     Создает тестовый клиент с подменой зависимости БД.
     """
+
     # Переопределяем зависимость get_db
     async def override_get_db():
         try:
@@ -83,17 +82,14 @@ async def test_user(client: AsyncClient) -> dict:
     """
     Создает тестового пользователя и возвращает его данные.
     """
-    user_data = {
-        "email": "test@example.com",
-        "password": "testpassword123"
-    }
+    user_data = {"email": "test@example.com", "password": "testpassword123"}
     # Регистрируем пользователя
     response = await client.post("/api/v1/auth/signup", json=user_data)
     assert response.status_code == 201
     # Логинимся для получения токена
     login_response = await client.post(
         "/api/v1/auth/login",
-        data={"username": user_data["email"], "password": user_data["password"]}
+        data={"username": user_data["email"], "password": user_data["password"]},
     )
     assert login_response.status_code == 200
 
@@ -102,5 +98,5 @@ async def test_user(client: AsyncClient) -> dict:
     return {
         **user_data,
         "access_token": token_data["access_token"],
-        "user_id": response.json()["id"]
+        "user_id": response.json()["id"],
     }

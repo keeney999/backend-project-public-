@@ -1,6 +1,7 @@
 """
 Основной файл приложения FastAPI.
 """
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,12 +25,14 @@ async def lifespan(app: FastAPI):
     yield
     # Очистка при завершении
     print("Shutting down...")
+
+
 # Создаем приложение FastAPI
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 # Настраиваем CORS
 app.add_middleware(
@@ -55,7 +58,7 @@ async def root():
         "message": f"Welcome to {settings.PROJECT_NAME}",
         "version": settings.VERSION,
         "docs": "/docs",
-        "redoc": "/redoc"
+        "redoc": "/redoc",
     }
 
 

@@ -1,6 +1,7 @@
 """
 Тесты для заметок.
 """
+
 import pytest
 from httpx import AsyncClient
 
@@ -8,18 +9,11 @@ from httpx import AsyncClient
 @pytest.mark.asyncio
 async def test_create_note(client: AsyncClient, test_user: dict):
     """Тест создания заметки."""
-    note_data = {
-        "title": "Test Note",
-        "content": "This is a test note content."
-    }
+    note_data = {"title": "Test Note", "content": "This is a test note content."}
 
     headers = {"Authorization": f"Bearer {test_user['access_token']}"}
 
-    response = await client.post(
-        "/api/v1/notes/",
-        json=note_data,
-        headers=headers
-    )
+    response = await client.post("/api/v1/notes/", json=note_data, headers=headers)
 
     assert response.status_code == 201
     data = response.json()
@@ -39,7 +33,7 @@ async def test_get_notes(client: AsyncClient, test_user: dict):
         await client.post(
             "/api/v1/notes/",
             json={"title": f"Note {i}", "content": f"Content {i}"},
-            headers=headers
+            headers=headers,
         )
     # Получаем список заметок
     response = await client.get("/api/v1/notes/", headers=headers)
@@ -67,16 +61,14 @@ async def test_update_note(client: AsyncClient, test_user: dict):
     create_response = await client.post(
         "/api/v1/notes/",
         json={"title": "Original", "content": "Original content"},
-        headers=headers
+        headers=headers,
     )
     note_id = create_response.json()["id"]
     # Обновляем заметку
     update_data = {"title": "Updated", "content": "Updated content"}
 
     response = await client.put(
-        f"/api/v1/notes/{note_id}",
-        json=update_data,
-        headers=headers
+        f"/api/v1/notes/{note_id}", json=update_data, headers=headers
     )
 
     assert response.status_code == 200
@@ -94,7 +86,7 @@ async def test_delete_note(client: AsyncClient, test_user: dict):
     create_response = await client.post(
         "/api/v1/notes/",
         json={"title": "To Delete", "content": "Will be deleted"},
-        headers=headers
+        headers=headers,
     )
     note_id = create_response.json()["id"]
     # Удаляем заметку

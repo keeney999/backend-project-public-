@@ -1,9 +1,9 @@
 """
 Основной роутер API v1.
 """
+
 from fastapi import APIRouter
 from app.api.v1.endpoints import auth, notes
-
 
 api_router = APIRouter()
 # Подключаем эндпоинты

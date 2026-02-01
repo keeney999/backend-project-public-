@@ -1,6 +1,7 @@
 """
 Тесты для аутентификации.
 """
+
 import pytest
 from httpx import AsyncClient
 
@@ -8,10 +9,7 @@ from httpx import AsyncClient
 @pytest.mark.asyncio
 async def test_signup_success(client: AsyncClient):
     """Тест успешной регистрации."""
-    user_data = {
-        "email": "newuser@example.com",
-        "password": "strongpassword123"
-    }
+    user_data = {"email": "newuser@example.com", "password": "strongpassword123"}
 
     response = await client.post("/api/v1/auth/signup", json=user_data)
 
@@ -27,7 +25,7 @@ async def test_signup_duplicate_email(client: AsyncClient, test_user: dict):
     """Тест регистрации с существующим email."""
     user_data = {
         "email": test_user["email"],  # Используем email существующего пользователя
-        "password": "anotherpassword123"
+        "password": "anotherpassword123",
     }
 
     response = await client.post("/api/v1/auth/signup", json=user_data)
@@ -39,10 +37,7 @@ async def test_signup_duplicate_email(client: AsyncClient, test_user: dict):
 @pytest.mark.asyncio
 async def test_login_success(client: AsyncClient, test_user: dict):
     """Тест успешного входа."""
-    login_data = {
-        "username": test_user["email"],
-        "password": test_user["password"]
-    }
+    login_data = {"username": test_user["email"], "password": test_user["password"]}
 
     response = await client.post("/api/v1/auth/login", data=login_data)
 
@@ -55,10 +50,7 @@ async def test_login_success(client: AsyncClient, test_user: dict):
 @pytest.mark.asyncio
 async def test_login_wrong_password(client: AsyncClient, test_user: dict):
     """Тест входа с неверным паролем."""
-    login_data = {
-        "username": test_user["email"],
-        "password": "wrongpassword"
-    }
+    login_data = {"username": test_user["email"], "password": "wrongpassword"}
 
     response = await client.post("/api/v1/auth/login", data=login_data)
 
